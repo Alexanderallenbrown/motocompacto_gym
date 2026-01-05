@@ -19,6 +19,7 @@ int gasPin = 13;
 int steerPin = 12;
 int gasVal = 90;
 int steerVal = 90;
+int goState = 0;
 
 #define BNO055_SAMPLERATE_DELAY_MS (5)
 //Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28, &Wire);
@@ -34,8 +35,9 @@ float x, y, z;
 float rollHEdge, pitchHedge, yawHedge;
 float roll,pitch,yaw;
 float vx, vy, vz;
-float previewDist = 1.5;
-
+float previewDist = 0.5;
+float previewGain = 1.0*180/PI;
+int steerCenterAngle = 90;
 
 void readIMU(){
   sensors_event_t orientationData, gravityData, angVelocityData;
@@ -79,15 +81,24 @@ void setup() {
 
   // servo route
   server.on("/servo", HTTP_GET, [](AsyncWebServerRequest * req) {
-    if (req->hasParam("gasS")) {
+    if (req->hasParam("gas")) {
       gasVal = req->getParam("gas")->value().toInt();
       gasServo.write(gasVal);
     }
-    if (req->hasParam("steerSlider")) {
+    if (req->hasParam("steer")) {
       steerVal = req->getParam("steer")->value().toInt();
       steerServo.write(steerVal);
     }
     req->send(200, "text/plain", "OK");
+  });
+
+  //"go" checkbox route
+  server.on("/go",HTTP_GET,[](AsyncWebServerRequest * req) {
+    goState = req->getParam("checked")-> value().toInt();
+    Serial.print("GOT A GO STATE: ");
+    Serial.println(goState);
+    
+    req->send(200,"text/plain","OK");
   });
 
   server.on("/data", HTTP_GET, [](AsyncWebServerRequest * req) {
@@ -132,5 +143,7 @@ void loop() {
   Serial.print(y); Serial.print(", ");
   Serial.print(yaw); Serial.print(", ");
   Serial.print(gasVal); Serial.print(", ");
-  Serial.print(steerVal); Serial.println();
+  Serial.print(steerVal); Serial.print(", ");
+  Serial.print(goState);
+  Serial.println();
 }

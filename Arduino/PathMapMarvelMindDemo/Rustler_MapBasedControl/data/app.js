@@ -3,18 +3,23 @@ let m=[],r={x:0,y:0,yaw:0,preview:1.5},s=20;
 let oldSlider = 0;
 let lastTime = Date.now();
 let throttleTime = 100;
-// // Load default map from ESP32 on startup
-// fetch("/map")
-// .then(r => r.text())
-// .then(t => {
-//     m = t.trim().split("\n")
-//               .slice(1)
-//               .map(l=>{
-//                   let [p,q] = l.split(",");
-//                   return {x:+p, y:+q};
-//               });
-//     d();
-// });
+
+function loadMap(){
+  console.log("attempting to load map...")
+  fetch("/map")
+  .then(r => r.text())
+  .then(t => {
+      m = t.trim().split("\n")
+                .slice(1)
+                .map(l=>{
+                    let [p,q] = l.split(",");
+                    return {x:+p, y:+q};
+                });
+      d();
+      console.log(m)
+  });
+}
+
 
 // preview slider
 preview.oninput=e=>{
@@ -54,8 +59,9 @@ steer.oninput=e=>{
 
 //go goBox
 go.oninput=e=>{
-  goVal = e.target.value
-  fetch("go?go="+e.target.value);
+  goVal = Number(e.target.checked)
+  console.log(goVal)
+  fetch("go?checked="+goVal);
 }
 
 // upload CSV
