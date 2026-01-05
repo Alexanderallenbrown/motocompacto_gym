@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>PathMap MarvelMind Demo</h2>
+
+<input type="file" id="csvInput">
+
+<br><br>
+
+<label>Preview Distance
+<input id="preview" type="range" min="0.2" max="3.0" step="0.1" value="1.5">
+</label>
+
+<br><br>
+
+<label>Gas
+<input id="gas" type="range" min="0" max="180" value="90">
+</label>
+
+<br>
+
+<label>Steer
+<input id="steer" type="range" min="0" max="180" value="90">
+</label>
+
+<br><br>
+
+<canvas id="plot" width="600" height="600"></canvas>
+
+<p>
+Station <span id="station">0</span> —
+Previewed Error <span id="lateral">0</span>
+</p>
+
+<script src="app.js"></script>
+</body>
+</html>
