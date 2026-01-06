@@ -1,4 +1,12 @@
-#VRML_SIM R2022a utf8
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "../protos/Bicycle.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/Floor.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/road/protos/Road.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "../protos/rider.proto"
+
 WorldInfo {
   info [
     "Autonomous Path Following World"
@@ -28,8 +36,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.18734992433374845 -0.7323090688252474 -0.6546933889756623 5.546035210385964
-  position -1.6351839236404666 1.8005698931396117 5.981223034831177
+  orientation -0.03610732914912964 -0.016971251799855834 0.9992038017311897 3.9795392431385874
+  position 16.511712544726524 23.611101810519855 5.050586875835694
   follow "Bicycle"
   followSmoothness 0.05
 }
@@ -135,4 +143,6 @@ DEF MOTORCYCLE Bicycle {
     }
   ]
   controller "motorcycle_pathfollower"
+}
+rider {
 }
