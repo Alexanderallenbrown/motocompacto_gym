@@ -4,6 +4,10 @@ let oldSlider = 0;
 let lastTime = Date.now();
 let throttleTime = 100;
 
+function zeroYaw(){
+  fetch('/zero_yaw');//.then(response => response.json()).then(data => {document.getElementById('zeroYawButton').innerText = data.buttonText;});
+}
+
 function loadMap(){
   console.log("attempting to load map...")
   fetch("/map")
@@ -28,6 +32,18 @@ preview.oninput=e=>{
     now = Date.now();
     if((val!=oldSlider)&&((now-lastTime)>throttleTime)){
       fetch("/preview?d="+r.preview);
+    }
+    lastTime = now;
+    oldSlider = val;
+};
+
+// preview slider
+previewGain.oninput=e=>{
+    r.previewGain=+e.target.value;
+    let val = r.previewGain
+    now = Date.now();
+    if((val!=oldSlider)&&((now-lastTime)>throttleTime)){
+      fetch("/previewGain?K="+r.previewGain);
     }
     lastTime = now;
     oldSlider = val;
@@ -88,11 +104,15 @@ function poll(){
     d();
  });
 }
-setInterval(poll,100);
+setInterval(poll,250);
 
 function d(){
- x.clearRect(0,0,600,600);x.save();x.translate(300,300);x.scale(s,-s);
- x.beginPath();m.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke();
+ x.clearRect(0,0,600,600);
+ x.save();
+ x.translate(300,300);
+ x.scale(s,-s);
+ x.beginPath();
+ m.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke();//x.lineWidth=10;
  x.fillStyle="red";x.beginPath();x.arc(r.x,r.y,.2,0,6.28);x.fill();
  let px=r.x+r.preview*Math.cos(r.yaw),py=r.y+r.preview*Math.sin(r.yaw);
  x.fillStyle="blue";x.beginPath();x.arc(px,py,.15,0,6.28);x.fill();

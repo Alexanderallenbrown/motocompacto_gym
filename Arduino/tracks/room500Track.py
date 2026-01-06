@@ -11,7 +11,7 @@ lengths = [2,1.5,2,1.5];
 angles = [0,pi,0,pi];
 
 #now use the trackbuilder's Track class to define the track object.
-track = Track(lengths, angles, dS = 0.02,x0=2,y0=1.5)
+track = Track(lengths, angles, dS = 0.02,x0=2.5,y0=1)
 
 maptoolsFileName = "./room500track.csv"
 maptoolsString = ""

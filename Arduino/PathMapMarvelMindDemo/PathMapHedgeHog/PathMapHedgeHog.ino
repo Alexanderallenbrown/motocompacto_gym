@@ -34,7 +34,7 @@ float x, y, z;
 float rollHEdge, pitchHedge, yawHedge;
 float roll,pitch,yaw;
 float vx, vy, vz;
-float previewDist = 1.5;
+float previewDist = 0.5;
 
 
 void readIMU(){
@@ -79,13 +79,13 @@ void setup() {
 
   // servo route
   server.on("/servo", HTTP_GET, [](AsyncWebServerRequest * req) {
-    if (req->hasParam("gasS")) {
+    if (req->hasParam("gas")) {
       gasVal = req->getParam("gas")->value().toInt();
-      gasServo.write(gasVal);
+//      gasServo.write(gasVal);
     }
-    if (req->hasParam("steerSlider")) {
+    if (req->hasParam("steer")) {
       steerVal = req->getParam("steer")->value().toInt();
-      steerServo.write(steerVal);
+//      steerServo.write(steerVal);
     }
     req->send(200, "text/plain", "OK");
   });
@@ -105,14 +105,24 @@ void setup() {
     req->send(200, "application/json", res);
   });
 
+//server.on("/map", HTTP_GET, [](AsyncWebServerRequest *req){
+//    File f = SPIFFS.open("/map.csv", "r");
+//    if(!f){
+//        req->send(404, "text/plain", "map.csv not found");
+//        return;
+//    }
+//    req->send(f, "text/plain", f.size());
+//    f.close();
+//});
+
+
 server.on("/map", HTTP_GET, [](AsyncWebServerRequest *req){
-    File f = SPIFFS.open("/map.csv", "r");
-    if(!f){
+    if (!SPIFFS.exists("/map.csv")) {
         req->send(404, "text/plain", "map.csv not found");
         return;
     }
-    req->send(f, "text/plain", f.size());
-    f.close();
+
+    req->send(SPIFFS, "/map.csv", "text/plain");
 });
 
   server.begin();

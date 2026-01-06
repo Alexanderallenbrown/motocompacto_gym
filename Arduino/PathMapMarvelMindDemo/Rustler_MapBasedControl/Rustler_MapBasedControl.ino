@@ -34,17 +34,21 @@ PathMap path;
 float x, y, z;
 float rollHEdge, pitchHedge, yawHedge;
 float roll,pitch,yaw;
+float yawBias=0;
 float vx, vy, vz;
 float previewDist = 0.5;
 float previewGain = 1.0*180/PI;
 int steerCenterAngle = 90;
+float station = 0;//path.estimateStation(x, -y, yaw);
+float ePrev   = 0;//path.previewLateralError(x, -y, yaw, previewDist);
+
 
 void readIMU(){
   sensors_event_t orientationData, gravityData, angVelocityData;
   bno.getEvent(&gravityData, Adafruit_BNO055::VECTOR_GRAVITY);
   bno.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
   bno.getEvent(&angVelocityData, Adafruit_BNO055::VECTOR_GYROSCOPE);
-  yaw = -orientationData.orientation.x*PI/180;
+  yaw = (-orientationData.orientation.x*PI/180)-yawBias;
 }
 
 void setup() {
@@ -64,6 +68,7 @@ void setup() {
 
   
   WiFi.softAP("PathMap", "12345678");
+  WiFi.setSleep(false);
 
   if (!SPIFFS.begin(true)) {
     Serial.println("SPIFFS failed"); while (1);
@@ -79,15 +84,20 @@ void setup() {
     req->send(200, "text/plain", "OK");
   });
 
+  server.on("/previewGain", HTTP_GET, [](AsyncWebServerRequest * req) {
+    if (req->hasParam("d")) previewGain = req->getParam("K")->value().toFloat();
+    req->send(200, "text/plain", "OK");
+  });
+
   // servo route
   server.on("/servo", HTTP_GET, [](AsyncWebServerRequest * req) {
     if (req->hasParam("gas")) {
       gasVal = req->getParam("gas")->value().toInt();
-      gasServo.write(gasVal);
+//      gasServo.write(gasVal);
     }
     if (req->hasParam("steer")) {
       steerVal = req->getParam("steer")->value().toInt();
-      steerServo.write(steerVal);
+//      steerServo.write(steerVal);
     }
     req->send(200, "text/plain", "OK");
   });
@@ -117,14 +127,18 @@ void setup() {
   });
 
 server.on("/map", HTTP_GET, [](AsyncWebServerRequest *req){
-    File f = SPIFFS.open("/map.csv", "r");
-    if(!f){
+    if (!SPIFFS.exists("/map.csv")) {
         req->send(404, "text/plain", "map.csv not found");
         return;
     }
-    req->send(f, "text/plain", f.size());
-    f.close();
+
+    req->send(SPIFFS, "/map.csv", "text/plain");
 });
+
+server.on("/zero_yaw",HTTP_GET,[](AsyncWebServerRequest *request) {
+      yawBias += yaw;
+      request->send(200, "text/plain", "OK");
+    });
 
   server.begin();
 }
@@ -135,8 +149,20 @@ void loop() {
   readIMU();
 //  beacon.getEuler(roll, pitch, yaw);
 
-  steerServo.write(steerVal);
-  gasServo.write(gasVal);
+  if(!goState){//we are in manual mode
+    gasServo.write(gasVal);
+    steerServo.write(steerVal);
+  }
+  else{//we are in autonomous mode
+//    float station = path.estimateStation(x, -y, yaw);
+    ePrev   = path.previewLateralError(x, -y, yaw, previewDist);
+    gasServo.write(gasVal);
+    float autoSteer = 90-previewGain*ePrev;
+    autoSteer = constrain(autoSteer,0,180);
+    steerServo.write(autoSteer);
+  }
+//  steerServo.write(steerVal);
+//  gasServo.write(gasVal);
 
   Serial.print(millis()); Serial.print(", ");
   Serial.print(x); Serial.print(", ");
