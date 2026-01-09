@@ -1,6 +1,6 @@
 """Motorcycle path following controller."""
 
-from controller import Robot, Motor, InertialUnit
+from controller import Robot, Motor, InertialUnit, Connector
 from numpy import *
 from Rollover import Rollover
 from realtime_plotter import RealTimePlot
@@ -44,6 +44,13 @@ if showPlots:
 
 # create the Robot instance.
 robot = Robot()
+connector = robot.getDevice("center_connector")
+timestep = int(robot.getBasicTimeStep())
+for _ in range(10):
+    robot.step(timestep)
+
+print("locking…")
+connector.lock()
 yawCorr = Rollover()
 roadCorr = Rollover()
 

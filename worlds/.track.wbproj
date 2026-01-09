@@ -5,5 +5,6 @@ sceneTreePerspectives: 000000ff00000001000000030000001c000000c0000000fa010000000
 maximizedDockId: -1
 centralWidgetVisible: 1
 orthographicViewHeight: 1
-textFiles: 1 "controllers/rider/rider.py" "protos/rider.proto"
+textFiles: 3 "controllers/rider/rider.py" "protos/rider.proto" "protos/Bicycle.proto" "controllers/motorcycle_pathfollower/motorcycle_pathfollower.py"
+globalOptionalRendering: ConnectorAxes
 consoles: Console:All:All

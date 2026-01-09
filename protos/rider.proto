@@ -3,9 +3,6 @@
 # license url: https://cyberbotics.com/webots_assets_license
 # documentation url: https://webots.cloud/run?url=https://github.com/cyberbotics/webots/blob/released/projects/humans/pedestrian/protos/Pedestrian.proto
 # keywords: robot/other
-# Simple model of a rider
-# Based on the model of Paul Salvador (zxys.com)
-# template language: javascript
 
 EXTERNPROTO "RiderTorso.proto"
 EXTERNPROTO "RiderNeck.proto"
@@ -33,7 +30,7 @@ PROTO rider [
   field       SFColor    pantsColor            0.24 0.25 0.5
   field       SFColor    shoesColor            0.28 0.15 0.06
   field       SFColor    skinColor             1.0 0.75 0.7
-  field       SFBool     enableBoundingObject  FALSE
+  field       SFBool     enableBoundingObject  TRUE
   field       SFFloat    bodyMass              1.0
   field       MFNode     bodySlot              []
   field       MFNode     leftHandSlot          []
@@ -47,7 +44,7 @@ PROTO rider [
   hiddenField SFFloat    rightArmAngle         0.0
   hiddenField SFFloat    rightLowerArmAngle    0.0
   hiddenField SFFloat    rightHandAngle        0.0
-  hiddenField SFFloat    leftArmAngle          -90
+  hiddenField SFFloat    leftArmAngle          0.0
   hiddenField SFFloat    leftLowerArmAngle     0.0
   hiddenField SFFloat    leftHandAngle         0.0
   hiddenField SFFloat    headAngle             0.0
@@ -63,14 +60,30 @@ Robot {
     }
     Solid {
       children [
+        Transform {
+          translation -.1 0 -.39
+          rotation 0 1 0 3.14159
+          children [
+            Connector {
+              name "center_connector"
+              isLocked TRUE
+              type "male"
+              autoLock TRUE
+              distanceTolerance 0.1
+            }
+            Shape {
+              appearance PBRAppearance { baseColor 1 0 0 }
+              geometry Sphere { radius .025 }
+            }
+          ]
+        }
         DEF TORSO Shape {
           appearance DEF SHIRT_APP PBRAppearance {
             baseColor IS shirtColor
             metalness 0
             roughness 1
           }
-          geometry RiderTorso {
-          }
+          geometry RiderTorso {}
         }
         DEF NECK Shape {
           appearance DEF SKIN_APP PBRAppearance {
@@ -78,8 +91,7 @@ Robot {
             metalness 0
             roughness 1
           }
-          geometry RiderNeck {
-          }
+          geometry RiderNeck {}
         }
         %< if (!rigid) { >%
         DEF LEFT_ARM HingeJoint {
@@ -96,8 +108,7 @@ Robot {
             children [
               Shape {
                 appearance USE SHIRT_APP
-                geometry RiderLeftUpperArm {
-                }
+                geometry RiderLeftUpperArm {}
               }
               %< if (!rigid) { >%
               HingeJoint {
@@ -114,8 +125,7 @@ Robot {
                   children [
                     Shape {
                       appearance USE SKIN_APP
-                      geometry RiderLeftLowerArm {
-                      }
+                      geometry RiderLeftLowerArm {}
                     }
                     %< if (!rigid) { >%
                     HingeJoint {
@@ -136,20 +146,16 @@ Robot {
                           }
                           Shape {
                             appearance USE SKIN_APP
-                            geometry RiderLeftHand {
-                            }
+                            geometry RiderLeftHand {}
                           }
                         ]
                       %< if (fields.enableBoundingObject.value) { >%
                         boundingObject Pose {
                           translation -0.02 0.253 -0.44
                           rotation -0.577351 -0.577351 -0.577349 -2.094397
-                          children [
-                            Box {
-                              size 0.05 0.17 0.14
-                            }
-                          ]
+                          children [ Box { size 0.05 0.17 0.14 } ]
                         }
+                        physics Physics {}
                       %< } >%
                       }
                     %< if (!rigid) { >%
@@ -159,13 +165,9 @@ Robot {
                 %< if (fields.enableBoundingObject.value) { >%
                   boundingObject Pose {
                     translation -0.04 0.254 -0.23
-                    children [
-                      Capsule {
-                        height 0.19
-                        radius 0.05
-                      }
-                    ]
+                    children [ Capsule { height 0.19 radius 0.05 } ]
                   }
+                  physics Physics {}
                 %< } >%
                 }
               %< if (!rigid) { >%
@@ -179,24 +181,16 @@ Robot {
                 Pose {
                   translation 0 0.23 0.2
                   rotation 1 0 0 1.5708
-                  children [
-                    Box {
-                      size 0.13 0.15 0.15
-                    }
-                  ]
+                  children [ Box { size 0.13 0.15 0.15 } ]
                 }
                 Pose {
                   translation -0.03 0.25 0.03
                   rotation 1 0 0 0.1409
-                  children [
-                    Capsule {
-                      height 0.2
-                      radius 0.07
-                    }
-                  ]
+                  children [ Capsule { height 0.2 radius 0.07 } ]
                 }
               ]
             }
+            physics Physics {}
           %< } >%
           }
         %< if (!rigid) { >%
@@ -215,8 +209,7 @@ Robot {
             children [
               Shape {
                 appearance USE SHIRT_APP
-                geometry RiderRightUpperArm {
-                }
+                geometry RiderRightUpperArm {}
               }
               %< if (!rigid) { >%
               HingeJoint {
@@ -233,8 +226,7 @@ Robot {
                   children [
                     Shape {
                       appearance USE SKIN_APP
-                      geometry RiderRightLowerArm {
-                      }
+                      geometry RiderRightLowerArm {}
                     }
                     %< if (!rigid) { >%
                     HingeJoint {
@@ -252,25 +244,20 @@ Robot {
                           Pose {
                             translation 0.02 -0.26 -0.45
                             rotation 1 0 0 1.5708
-
                             children IS rightHandSlot
                           }
                           Shape {
                             appearance USE SKIN_APP
-                            geometry RiderRightHand {
-                            }
+                            geometry RiderRightHand {}
                           }
                         ]
                       %< if (fields.enableBoundingObject.value) { >%
                         boundingObject Pose {
                           translation 0.02 -0.253 -0.44
                           rotation -0.577351 -0.577351 -0.577349 -2.094397
-                          children [
-                            Box {
-                              size 0.05 0.17 0.14
-                            }
-                          ]
+                          children [ Box { size 0.05 0.17 0.14 } ]
                         }
+                        physics Physics {}
                       %< } >%
                       }
                     %< if (!rigid) { >%
@@ -280,13 +267,9 @@ Robot {
                 %< if (fields.enableBoundingObject.value) { >%
                   boundingObject Pose {
                     translation -0.025 -0.254 -0.23
-                    children [
-                      Capsule {
-                        height 0.19
-                        radius 0.05
-                      }
-                    ]
+                    children [ Capsule { height 0.19 radius 0.05 } ]
                   }
+                  physics Physics {}
                 %< } >%
                 }
               %< if (!rigid) { >%
@@ -300,24 +283,16 @@ Robot {
                 Pose {
                   translation 0 -0.23 0.2
                   rotation 1 0 0 1.5708
-                  children [
-                    Box {
-                      size 0.13 0.15 0.15
-                    }
-                  ]
+                  children [ Box { size 0.13 0.15 0.15 } ]
                 }
                 Pose {
                   translation -0.02 -0.25 0.03
                   rotation 1 0 0 0.1409
-                  children [
-                    Capsule {
-                      height 0.2
-                      radius 0.07
-                    }
-                  ]
+                  children [ Capsule { height 0.2 radius 0.07 } ]
                 }
               ]
             }
+            physics Physics {}
           %< } >%
           }
         %< if (!rigid) { >%
@@ -339,8 +314,7 @@ Robot {
                   metalness 0
                   roughness 1
                 }
-                geometry RiderLeftUpperLeg {
-                }
+                geometry RiderLeftUpperLeg {}
               }
               %< if (!rigid) { >%
               HingeJoint {
@@ -356,8 +330,7 @@ Robot {
                   children [
                     Shape {
                       appearance USE LEG_APP
-                      geometry RiderLeftLowerLeg {
-                      }
+                      geometry RiderLeftLowerLeg {}
                     }
                     %< if (!rigid) { >%
                     HingeJoint {
@@ -377,20 +350,16 @@ Robot {
                               metalness 0
                               roughness 1
                             }
-                            geometry RiderLeftFoot {
-                            }
+                            geometry RiderLeftFoot {}
                           }
                         ]
                       %< if (fields.enableBoundingObject.value) { >%
                         boundingObject Pose {
                           translation 0 0.115 -1.21
                           rotation -0.577351 -0.577351 -0.577349 -2.094397
-                          children [
-                            Box {
-                              size 0.1 0.1 0.27
-                            }
-                          ]
+                          children [ Box { size 0.1 0.1 0.27 } ]
                         }
+                        physics Physics {}
                       %< } >%
                       }
                     %< if (!rigid) { >%
@@ -401,13 +370,9 @@ Robot {
                   boundingObject Pose {
                     translation -0.056 0.116 -0.965
                     rotation 1 0 0 0.1
-                    children [
-                      Capsule {
-                        height 0.335
-                        radius 0.075
-                      }
-                    ]
+                    children [ Capsule { height 0.335 radius 0.075 } ]
                   }
+                  physics Physics {}
                 %< } >%
                 }
               %< if (!rigid) { >%
@@ -419,12 +384,9 @@ Robot {
             boundingObject Pose {
               translation -0.033 0.116 -0.5
               rotation 1 0 0 1.5708
-              children [
-                Box {
-                  size 0.15 0.6 0.19
-                }
-              ]
+              children [ Box { size 0.15 0.6 0.19 } ]
             }
+            physics Physics {}
           %< } >%
           }
         %< if (!rigid) { >%
@@ -442,8 +404,7 @@ Robot {
             children [
               Shape {
                 appearance USE LEG_APP
-                geometry RiderRightUpperLeg {
-                }
+                geometry RiderRightUpperLeg {}
               }
               %< if (!rigid) { >%
               HingeJoint {
@@ -459,8 +420,7 @@ Robot {
                   children [
                     Shape {
                       appearance USE LEG_APP
-                      geometry RiderRightLowerLeg {
-                      }
+                      geometry RiderRightLowerLeg {}
                     }
                     %< if (!rigid) { >%
                     HingeJoint {
@@ -476,20 +436,16 @@ Robot {
                         children [
                           Shape {
                             appearance USE SHOE_APP
-                            geometry RiderRightFoot {
-                            }
+                            geometry RiderRightFoot {}
                           }
                         ]
                       %< if (fields.enableBoundingObject.value) { >%
                         boundingObject Pose {
                           translation 0.031 -0.115 -1.21
                           rotation -0.577351 -0.577351 -0.577349 -2.094397
-                          children [
-                            Box {
-                              size 0.1 0.1 0.27
-                            }
-                          ]
+                          children [ Box { size 0.1 0.1 0.27 } ]
                         }
+                        physics Physics {}
                       %< } >%
                       }
                     %< if (!rigid) { >%
@@ -500,13 +456,9 @@ Robot {
                   boundingObject Pose {
                     translation -0.044 -0.116 -0.965
                     rotation 1 0 0 0.1
-                    children [
-                      Capsule {
-                        height 0.335
-                        radius 0.075
-                      }
-                    ]
+                    children [ Capsule { height 0.335 radius 0.075 } ]
                   }
+                  physics Physics {}
                 %< } >%
                 }
               %< if (!rigid) { >%
@@ -518,12 +470,9 @@ Robot {
             boundingObject Pose {
               translation -0.033 -0.116 -0.5
               rotation 1 0 0 1.5708
-              children [
-                Box {
-                  size 0.15 0.6 0.19
-                }
-              ]
+              children [ Box { size 0.15 0.6 0.19 } ]
             }
+            physics Physics {}
           %< } >%
           }
         %< if (!rigid) { >%
@@ -541,8 +490,7 @@ Robot {
             children [
               Shape {
                 appearance USE SKIN_APP
-                geometry RiderHead {
-                }
+                geometry RiderHead {}
               }
             ]
             name "head"
@@ -550,37 +498,24 @@ Robot {
             boundingObject Pose {
               translation 0.04 0 0.436
               rotation 0 1 0 -0.5236
-              children [
-                Capsule {
-                  height 0.02
-                  radius 0.13
-                }
-              ]
+              children [ Capsule { height 0.02 radius 0.13 } ]
             }
+            physics Physics {}
           %< } >%
           }
         %< if (!rigid) { >%
         }
         %< } >%
       ]
-    %< if (fields.enableBoundingObject.value) { >%
       boundingObject Group {
         children [
-          DEF TORSO_BO Box {
-            size 0.24 0.35 0.6
-          }
+          DEF TORSO_BO Box { size 0.24 0.35 0.6 }
           DEF NECK_BO Pose {
             translation 0.01 0 0.3
-            children [
-              Capsule {
-                height 0.1
-                radius 0.07
-              }
-            ]
+            children [ Capsule { height 0.1 radius 0.07 } ]
           }
         ]
       }
-    %< } >%
       physics Physics {
         mass IS bodyMass
         density -1

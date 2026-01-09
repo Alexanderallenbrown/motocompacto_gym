@@ -294,19 +294,39 @@ appearance PBRAppearance {
     DEF centermass Solid {
       translation %<= A >% 0 %<= H >%
       children [
-
         DEF centermass_shape Shape {
           geometry Sphere {
             radius IS tireRadius
             subdivision 3
           }
         }
-      ]
-      boundingObject USE centermass_shape
-      physics Physics {
-        mass IS CenterMass
-      }
-    }
+        Transform {
+          translation -.36 0 .3
+          children [
+            Connector {
+              name "center_connector"
+              isLocked TRUE
+              type "female"
+              autoLock TRUE
+              distanceTolerance 0.1
+            }
+            Shape {
+              appearance PBRAppearance {
+                baseColor 1 0 0
+              }
+              geometry Sphere{
+                radius .025
+              }
+            }
+          ]
+        }
+  ]
+  boundingObject USE centermass_shape
+  physics Physics {
+    mass IS CenterMass
+  }
+}
+
     %<if(bicycleShape){>%
     Group {
       children [
@@ -478,7 +498,7 @@ appearance PBRAppearance {
     translation %<= A >% 0 %<= H >%
     children[
     USE centermass_shape
-]
+  ]
   }
   physics Physics {
     mass IS CenterMass

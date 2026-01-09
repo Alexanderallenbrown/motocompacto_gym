@@ -36,8 +36,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.10816626210853002 -0.11206239089960555 0.9877965783942223 4.480198114187534
-  position 5.99824011877948 27.872335125632087 8.06871975257485
+  orientation -0.19317780596786577 -0.14577356612656425 0.9702743955707508 4.253480143403831
+  position 7.061016709524152 9.66192200500232 2.5382769340815377
   follow "Bicycle"
   followSmoothness 0.05
 }
@@ -144,9 +144,9 @@ DEF MOTORCYCLE Bicycle {
   ]
   controller "motorcycle_pathfollower"
 }
-
 DEF RIDER rider {
-  controller "rider"
-  controllerArgs "TRUE"
+  translation 5.2 5 1.05
+  controllerArgs [
+    "TRUE"
+  ]
 }
-
