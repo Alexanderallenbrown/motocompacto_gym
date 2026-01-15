@@ -1,10 +1,10 @@
 #VRML_SIM R2023b utf8
 
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "../protos/Bicycle.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/Floor.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/road/protos/Road.proto"
-EXTERNPROTO "../protos/Bicycle.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "../protos/rider.proto"
 
 WorldInfo {
@@ -36,8 +36,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.2056500987227215 -0.325104056295499 -0.9230467970127777 4.765111269212305
-  position 5.310743407746621 1.7034441155696296 2.387220289585797
+  orientation 0.20892920617423583 0.20480041783840838 -0.956245457850973 1.6424394531318527
+  position 5.178018237819666 10.031143600474293 2.6172431112286665
   follow "Bicycle"
   followSmoothness 0.05
 }
@@ -145,39 +145,5 @@ DEF MOTORCYCLE Bicycle {
   controller "motorcycle_pathfollower"
 }
 rider {
-  hidden translation_3 0.016032948976084906 -0.017569515440744643 0.03070571558285884
-  hidden rotation_3 -0.7066645171051948 -0.7066645171051948 -0.035362699684319106 0.14139188056210633
-  hidden translation_4 -0.10206481754850609 0 -0.013528054669240619
-  hidden rotation_4 0 -1 0 1.1000000000000003
-  hidden translation_7 0.016032948976084906 0.017569515440744643 0.03070571558285884
-  hidden rotation_7 0.7066645171051948 -0.7066645171051948 0.035362699684319106 0.14139188056210633
-  hidden translation_8 -0.10206481754850609 0 -0.013528054669240619
-  hidden rotation_8 0 -1 0 1.1000000000000003
-  hidden translation_11 -0.28921836316140753 0 -0.12827286916986938
-  hidden rotation_11 0 -1 0 1.1000000000000003
-  hidden translation_12 0.7302183058691124 0 -0.7361645763306673
-  hidden rotation_12 0 1 0 1.5
-  hidden translation_13 -0.6738776049335257 2.7755575615628914e-17 -0.15153690107788154
-  hidden rotation_13 0 -1 0 0.6000000000000003
-  hidden translation_15 -0.28921836316140753 0 -0.12827286916986938
-  hidden rotation_15 0 -1 0 1.1000000000000003
-  hidden translation_16 0.7302183058691124 0 -0.7361645763306673
-  hidden rotation_16 0 1 0 1.5
-  hidden translation_17 -0.6738776049335257 -2.7755575615628914e-17 -0.15153690107788154
-  hidden rotation_17 0 -1 0 0.6000000000000003
-  controllerArgs [
-    ""
-  ]
-  rightLegAngle -1.1
-  rightLowerLegAngle 1.5
-  rightFootAngle -0.6
-  leftLegAngle -1.1
-  leftLowerLegAngle 1.5
-  leftFootAngle -0.6
-  rightArmAngleSI -0.1
-  rightArmAngleLM 0.1
-  rightLowerArmAngle -1.1
-  leftArmAngleSI -0.1
-  leftArmAngleLM -0.1
-  leftLowerArmAngle -1.1
+  translation 5.2 5 1.05
 }

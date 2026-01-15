@@ -19,7 +19,6 @@ PROTO  Bicycle [
   field SFFloat    tireRadius   .02
   field SFFloat    Xff          0.9
   field SFFloat    Zff          0.7
-
   field MFNode     Addon []
   field MFNode     Addon_Front []
   field MFNode     Addon_FW []
@@ -167,7 +166,7 @@ InertialUnit {
           name "steering_motor"
           controlPID 100 0 0
           maxTorque 10000
-          maxVelocity 10000
+          maxVelocity 100
         }
       ]
       endPoint DEF fork Solid {
@@ -319,6 +318,74 @@ appearance PBRAppearance {
               }
             }
           ]
+        }
+        Transform {
+          translation .105 .2 .51
+          children [
+            Connector {
+              name "lefthand_connector"
+              isLocked TRUE
+              type "female"
+              autoLock TRUE
+              distanceTolerance 0.1
+            }
+            Shape {
+              appearance PBRAppearance {
+                baseColor 1 0 0
+              }
+              geometry Sphere{
+                radius .025
+              }
+            }
+          ]
+        }
+        Transform {
+          translation .105 -.19 .51
+          children [
+            Connector {
+              name "righthand_connector"
+              isLocked TRUE
+              type "female"
+              autoLock TRUE
+              distanceTolerance 0.1
+            }
+            Shape {
+              appearance PBRAppearance {
+                baseColor 1 0 0
+              }
+              geometry Sphere{
+                radius .025
+              }
+            }
+          ]
+        }
+        DEF LEFT_FOOTPEG Solid {  # New Solid wrapper
+          translation .02 .12 -.26
+          children [
+            Connector {
+              name "leftfoot_connector"
+              isLocked TRUE type "female" autoLock TRUE
+              distanceTolerance 0.02 axisTolerance 0.1
+            }
+            Shape { appearance PBRAppearance { baseColor 1 0 0 } geometry Sphere { radius .025 } }
+          ]
+          boundingObject Box { size 0.1 0.1 0.05 }  # adjust to match your peg size
+          physics Physics { mass 8.0 density -1 }     # Sturdy peg
+          
+        }
+        DEF RIGHT_FOOTPEG Solid {  # New Solid wrapper
+          translation .02 -.12 -.26
+          children [
+            Connector {
+              name "rightfoot_connector"
+              isLocked TRUE type "female" autoLock TRUE
+              distanceTolerance 0.02 axisTolerance 0.1
+            }
+            Shape { appearance PBRAppearance { baseColor 1 0 0 } geometry Sphere { radius .025 } }
+          ]
+          boundingObject Box { size 0.1 0.1 0.05 }  # adjust to match your peg size
+          physics Physics { mass 8.0 density -1 }     # Sturdy peg
+          
         }
   ]
   boundingObject USE centermass_shape

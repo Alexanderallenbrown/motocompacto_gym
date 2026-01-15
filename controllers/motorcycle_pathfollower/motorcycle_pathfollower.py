@@ -44,13 +44,21 @@ if showPlots:
 
 # create the Robot instance.
 robot = Robot()
-connector = robot.getDevice("center_connector")
+t_connector = robot.getDevice("center_connector")
+lf_connector = robot.getDevice("leftfoot_connector")
+rf_connector = robot.getDevice("rightfoot_connector")
+lh_connector = robot.getDevice("lefthand_connector")
+rh_connector = robot.getDevice("righthand_connector")
 timestep = int(robot.getBasicTimeStep())
 for _ in range(10):
     robot.step(timestep)
 
 print("locking…")
-connector.lock()
+t_connector.lock()
+lf_connector.lock()
+rf_connector.lock()
+lh_connector.lock()
+rh_connector.lock()
 yawCorr = Rollover()
 roadCorr = Rollover()
 

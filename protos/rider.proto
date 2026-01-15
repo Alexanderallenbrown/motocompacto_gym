@@ -1,8 +1,5 @@
-#VRML_SIM R2025a utf8
-# license: Copyright Cyberbotics Ltd. Licensed for use only with Webots.
-# license url: https://cyberbotics.com/webots_assets_license
-# documentation url: https://webots.cloud/run?url=https://github.com/cyberbotics/webots/blob/released/projects/humans/pedestrian/protos/Pedestrian.proto
-# keywords: robot/other
+#VRML_SIM R2023b utf8
+# template language: javascript
 
 EXTERNPROTO "RiderTorso.proto"
 EXTERNPROTO "RiderNeck.proto"
@@ -21,7 +18,8 @@ EXTERNPROTO "RiderRightFoot.proto"
 EXTERNPROTO "RiderHead.proto"
 
 PROTO rider [
-  field       SFVec3f    translation           0 0 1.27
+  field       SFVec3f    translation           5.2 5 1.05
+  field       SFRotation rhr                   0 1 0 3.14159
   field       SFRotation rotation              0 0 1 0
   field       SFString   name                  "rider"
   field       SFString   controller            "rider"
@@ -33,21 +31,24 @@ PROTO rider [
   field       SFBool     enableBoundingObject  TRUE
   field       SFFloat    bodyMass              1.0
   field       MFNode     bodySlot              []
-  field       MFNode     leftHandSlot          []
   field       MFNode     rightHandSlot         []
-  hiddenField SFFloat    rightLegAngle         0.0
-  hiddenField SFFloat    rightLowerLegAngle    0.0
-  hiddenField SFFloat    rightFootAngle        0.0
-  hiddenField SFFloat    leftLegAngle          0.0
-  hiddenField SFFloat    leftLowerLegAngle     0.0
-  hiddenField SFFloat    leftFootAngle         0.0
-  hiddenField SFFloat    rightArmAngle         0.0
-  hiddenField SFFloat    rightLowerArmAngle    0.0
-  hiddenField SFFloat    rightHandAngle        0.0
-  hiddenField SFFloat    leftArmAngle          0.0
-  hiddenField SFFloat    leftLowerArmAngle     0.0
-  hiddenField SFFloat    leftHandAngle         0.0
-  hiddenField SFFloat    headAngle             0.0
+  field       MFNode     leftHandSlot          []
+  # symmetric default joint angles0
+  field SFFloat    rightLegAngle         0
+  field SFFloat    rightLowerLegAngle    0
+  field SFFloat    rightFootAngle        0
+  field SFFloat    leftLegAngle          0
+  field SFFloat    leftLowerLegAngle     0
+  field SFFloat    leftFootAngle         0
+  field SFFloat    rightArmAngleSI       0
+  field SFFloat    rightArmAngleLM       0
+  field SFFloat    rightLowerArmAngle    0
+  field SFFloat    rightHandAngle        0
+  field SFFloat    leftArmAngleSI        0
+  field SFFloat    leftArmAngleLM        0
+  field SFFloat    leftLowerArmAngle     0
+  field SFFloat    leftHandAngle         0
+  field SFFloat    headAngle             0
 ]
 {
 %< const rigid = fields.controllerArgs.value.length == 0; >%
@@ -72,7 +73,7 @@ Robot {
               distanceTolerance 0.1
             }
             Shape {
-              appearance PBRAppearance { baseColor 1 0 0 }
+              appearance PBRAppearance { baseColor 0 1 0 }
               geometry Sphere { radius .025 }
             }
           ]
@@ -94,11 +95,16 @@ Robot {
           geometry RiderNeck {}
         }
         %< if (!rigid) { >%
-        DEF LEFT_ARM HingeJoint {
+        DEF LEFT_ARM Hinge2Joint {
           jointParameters HingeJointParameters {
-            position IS leftArmAngle
+            position IS leftArmAngleSI
             anchor -0.01 0.28 0.19
             axis 0 1 0
+          }
+          jointParameters2 JointParameters {
+            position IS leftArmAngleLM
+            anchor -0.01 0.28 0.19
+            axis 1 0 0
           }
           endPoint DEF LEFT_UPPER_ARM Solid {
         %< } else { >%
@@ -148,10 +154,27 @@ Robot {
                             appearance USE SKIN_APP
                             geometry RiderLeftHand {}
                           }
+                          Transform {
+                            translation 0 .23 -.44
+                            rotation 0 1 0 4.31969
+                            children [
+                              Connector {
+                                name "lefthand_connector"
+                                isLocked TRUE
+                                type "male"
+                                autoLock TRUE
+                                distanceTolerance 0.1
+                              }
+                              Shape {
+                                appearance PBRAppearance { baseColor 0 1 0 }
+                                geometry Sphere { radius .025 }
+                              }
+                            ]
+                          }
                         ]
                       %< if (fields.enableBoundingObject.value) { >%
                         boundingObject Pose {
-                          translation -0.02 0.253 -0.44
+                          translation 0 0.253 -0.44
                           rotation -0.577351 -0.577351 -0.577349 -2.094397
                           children [ Box { size 0.05 0.17 0.14 } ]
                         }
@@ -195,11 +218,16 @@ Robot {
           }
         %< if (!rigid) { >%
         }
-        DEF RIGHT_ARM HingeJoint {
+        DEF RIGHT_ARM Hinge2Joint {
           jointParameters HingeJointParameters {
-            position IS rightArmAngle
+            position IS rightArmAngleSI
             anchor -0.01 -0.28 0.19
             axis 0 1 0
+          }
+          jointParameters2 JointParameters {
+            position IS rightArmAngleLM
+            anchor -0.01 0.28 0.19
+            axis 1 0 0
           }
           endPoint DEF RIGHT_UPPER_ARM Solid {
         %< } else { >%
@@ -242,18 +270,34 @@ Robot {
                         rotation 0 1 0 0
                         children [
                           Pose {
-                            translation 0.02 -0.26 -0.45
-                            rotation 1 0 0 1.5708
+                            translation 0 -0.25 -0.45
                             children IS rightHandSlot
                           }
                           Shape {
                             appearance USE SKIN_APP
                             geometry RiderRightHand {}
                           }
+                          Transform {
+                            translation 0 -.23 -.44
+                            rotation 0 1 0 4.31969
+                            children [
+                              Connector {
+                                name "righthand_connector"
+                                isLocked TRUE
+                                type "male"
+                                autoLock TRUE
+                                distanceTolerance 0.1
+                              }
+                              Shape {
+                                appearance PBRAppearance { baseColor 0 1 0 }
+                                geometry Sphere { radius .025 }
+                              }
+                            ]
+                          }
                         ]
                       %< if (fields.enableBoundingObject.value) { >%
                         boundingObject Pose {
-                          translation 0.02 -0.253 -0.44
+                          translation 0 -0.253 -0.44
                           rotation -0.577351 -0.577351 -0.577349 -2.094397
                           children [ Box { size 0.05 0.17 0.14 } ]
                         }
@@ -266,7 +310,7 @@ Robot {
                   ]
                 %< if (fields.enableBoundingObject.value) { >%
                   boundingObject Pose {
-                    translation -0.025 -0.254 -0.23
+                    translation -0.04 -0.254 -0.23
                     children [ Capsule { height 0.19 radius 0.05 } ]
                   }
                   physics Physics {}
@@ -286,7 +330,7 @@ Robot {
                   children [ Box { size 0.13 0.15 0.15 } ]
                 }
                 Pose {
-                  translation -0.02 -0.25 0.03
+                  translation -0.03 -0.25 0.03
                   rotation 1 0 0 0.1409
                   children [ Capsule { height 0.2 radius 0.07 } ]
                 }
@@ -344,6 +388,23 @@ Robot {
                       DEF LEFT_FOOT Solid {
                     %< } >%
                         children [
+                          Transform {
+                            translation -.025 .12 -1.29
+                            rotation 0 1 0 3.14159
+                            children [
+                              Connector {
+                                name "leftfoot_connector"
+                                isLocked TRUE
+                                type "male"
+                                autoLock TRUE
+                                distanceTolerance 0.1
+                              }
+                              Shape {
+                                appearance PBRAppearance { baseColor 0 1 0 }
+                                geometry Sphere { radius .025 }
+                              }
+                            ]
+                          }
                           Shape {
                             appearance DEF SHOE_APP PBRAppearance {
                               baseColor IS shoesColor
@@ -359,7 +420,8 @@ Robot {
                           rotation -0.577351 -0.577351 -0.577349 -2.094397
                           children [ Box { size 0.1 0.1 0.27 } ]
                         }
-                        physics Physics {}
+                        physics Physics {
+                        }
                       %< } >%
                       }
                     %< if (!rigid) { >%
@@ -372,7 +434,8 @@ Robot {
                     rotation 1 0 0 0.1
                     children [ Capsule { height 0.335 radius 0.075 } ]
                   }
-                  physics Physics {}
+                  physics Physics {
+                  }
                 %< } >%
                 }
               %< if (!rigid) { >%
@@ -386,7 +449,8 @@ Robot {
               rotation 1 0 0 1.5708
               children [ Box { size 0.15 0.6 0.19 } ]
             }
-            physics Physics {}
+            physics Physics {
+            } 
           %< } >%
           }
         %< if (!rigid) { >%
@@ -434,6 +498,23 @@ Robot {
                       DEF RIGHT_FEET Solid {
                     %< } >%
                         children [
+                          Transform {
+                            translation -.025 -.12 -1.29
+                            rotation 0 1 0 3.14159
+                            children [
+                              Connector {
+                                name "righttfoot_connector"
+                                isLocked TRUE
+                                type "male"
+                                autoLock TRUE
+                                distanceTolerance 0.1
+                              }
+                              Shape {
+                                appearance PBRAppearance { baseColor 0 1 0 }
+                                geometry Sphere { radius .025 }
+                              }
+                            ]
+                          }
                           Shape {
                             appearance USE SHOE_APP
                             geometry RiderRightFoot {}
@@ -441,7 +522,7 @@ Robot {
                         ]
                       %< if (fields.enableBoundingObject.value) { >%
                         boundingObject Pose {
-                          translation 0.031 -0.115 -1.21
+                          translation 0 -0.115 -1.21
                           rotation -0.577351 -0.577351 -0.577349 -2.094397
                           children [ Box { size 0.1 0.1 0.27 } ]
                         }
@@ -454,7 +535,7 @@ Robot {
                   ]
                 %< if (fields.enableBoundingObject.value) { >%
                   boundingObject Pose {
-                    translation -0.044 -0.116 -0.965
+                    translation -0.056 -0.116 -0.965
                     rotation 1 0 0 0.1
                     children [ Capsule { height 0.335 radius 0.075 } ]
                   }
@@ -507,6 +588,7 @@ Robot {
         }
         %< } >%
       ]
+      # %< if (fields.enableBoundingObject.value) { >%
       boundingObject Group {
         children [
           DEF TORSO_BO Box { size 0.24 0.35 0.6 }
@@ -520,10 +602,17 @@ Robot {
         mass IS bodyMass
         density -1
       }
+      %< } >%
     }
   ]
   name IS name
   model "rider"
+  boundingObject Transform {
+    translation 0 0 0
+    children [ Box { size 0.1 0.1 0.1 } ]
+  }
+  physics Physics{mass 1}
+  
   radarCrossSection 1
   recognitionColors [
     %<= fields.shirtColor.value.r >% %<= fields.shirtColor.value.g >% %<= fields.shirtColor.value.b >%
