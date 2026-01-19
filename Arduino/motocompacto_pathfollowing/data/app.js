@@ -327,7 +327,7 @@ function loadMap(){
   function downloadDataFile() {
     if(JTLogging){
 
-      let pref = document.getElementById('prefixField').value;
+      let pref = "pathFollowing"//document.getElementById('prefixField').value;
       let comment = document.getElementById('commentField').value;
       textDataArray.unshift('#'+comment);
 
@@ -346,13 +346,13 @@ function loadMap(){
 
       const dateString = `${year}_${month}_${day}_${hours}_${minutes}_${seconds}`;
       // Using toString()
-      a.download = dateString+'_'+pref+'_'+'microbikeData.txt'; // File name
+      a.download = dateString+'_'+pref+'_'+'compactoData.txt'; // File name
       a.click();
-      window.URL.revokeObjectURL(url);}
-      JTLogging = false;
+      window.URL.revokeObjectURL(url);
     }
-    else{
-      JTLogging = true;
+      JTLogging = !JTLogging;
     }
+
+
 
     //        setInterval(fetchSpeedField,50);

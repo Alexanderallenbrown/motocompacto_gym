@@ -24,7 +24,7 @@ void doBlock1() {
   }
   else {
     su_elapsed = millis() - su_start;
-    su_sig = (su_elapsed >= 1000);
+    su_sig = (su_elapsed >= 3000);
   }
 
   if (!s4) {
