@@ -151,8 +151,7 @@ function worldToScreen(wx, wy) {
 }
 
 function drawMap() {
-  if (mapRunning) return;
-    mapRunning = true;
+
     // background
     mapCtx.fillStyle = "#0e0e0e";
     mapCtx.fillRect(0, 0, MAP_W, MAP_H);
@@ -288,6 +287,8 @@ function logJTData(d) {
 
 
 function loadMap(){
+  if (mapRunning) return;
+    mapRunning = true;
   console.log("attempting to load map...")
   fetch("/map")
   .then(r => r.text())
@@ -315,6 +316,9 @@ function loadMap(){
     fetch('/zero_roll').then(response => response.json()).then(data => {document.getElementById('zeroRollButton').innerText = data.buttonText;});
   }
 
+  function zeroYaw(){
+    fetch('/zero_yaw');//.then(response => response.json()).then(data => {document.getElementById('zeroYawButton').innerText = data.buttonText;});
+  }
 
   function pollData(){
     fetch("/data")

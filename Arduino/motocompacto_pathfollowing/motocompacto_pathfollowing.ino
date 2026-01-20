@@ -161,8 +161,14 @@ void loop() {
 //    Serial.print(",");
 //    Serial.print(U);
 //    Serial.print(",");
+Serial.print(x);
+Serial.print(",");
+Serial.print(y);
+Serial.print(",");
+Serial.print(yaw);
     Serial.print(",");
     Serial.print(goalRoll_filt);
+    Serial.print(",");
     Serial.print(rollFinal);
     Serial.print(",");
     Serial.print(rollRate);
