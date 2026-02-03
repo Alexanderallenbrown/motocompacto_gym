@@ -68,7 +68,7 @@ steer_actuator = actuator_simulator(steer_zeta,steer_wn)
 #     vstudy,restudy,imstudy = plotEigStudy(MC_params,True)
 
 # LANE CONTROL PARAMETERS:
-Tprev = 2
+Tprev = 3
 Kprev = .05
 Kdprev = 0.05
 eprev_old = 0
