@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  <title>Motocompacto Control</title>
+  <style>
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* align content from top */
+    min-height: 100vh;
+    background-color: #121212; /* Dark background */
+    color: #ffffff; /* Light text */
+}
+
+h2 {
+    font-size: 3.5vw;
+    margin-top: 1vh;
+}
+
+p {
+    font-size: 2.5vw;
+}
+
+.slider-container {
+    width: 60vw;
+    max-width: 500px;
+}
+
+input[type="range"] {
+    width: 100%;
+    height: 4vh;
+    cursor: pointer;
+    -webkit-appearance: none;
+    background: transparent;
+}
+
+/* Custom Slider */
+input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 16px;  /* slightly smaller track */
+    background: #1e88e5;
+    border-radius: 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 40px;   /* smaller thumb */
+    height: 25px;
+    background: #ffffff;
+    border-radius: 50%;
+    margin-top: -4px;
+    box-shadow: 0 0 8px #1e88e5;
+}
+
+button {
+    font-size: 5vw;   /* slightly smaller text */
+    padding: 1.5vh 3vw;  /* slightly smaller padding */
+    border: none;
+    background-color: #1e88e5;
+    color: white;
+    border-radius: 8px;  /* slightly smaller corner radius */
+    cursor: pointer;
+    margin-top: 12px;  /* less vertical spacing */
+    box-shadow: 0 0 12px rgba(30, 136, 229, 0.5);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+    background-color: #1565c0;
+    box-shadow: 0 0 20px rgba(30, 136, 229, 0.8);
+}
+
+/* Button container to align buttons neatly */
+.button-container {
+    width: 60vw;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* tighter spacing between buttons */
+    align-items: center;
+}
+.canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px; /* space between plot and map */
+    flex-wrap: wrap; /* wrap on small screens */
+}
+
+.plot-wrapper, .map-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.canvas-label {
+    margin-bottom: 4px;
+    font-size: 1.2em;
+}
+/* Top button row styling */
+.top-button-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;       /* tighter spacing */
+  flex-wrap: wrap; /* wrap on narrow screens */
+  margin-bottom: 8px; /* smaller spacing below row */
+}
+
+.top-button-row button {
+  font-size: 1vw;      /* much smaller text */
+  padding: 0.8vh 1vw; /* tighter padding */
+  min-width: 45px;     /* ensures buttons are still touch-friendly */
+  border-radius: 6px;   /* smaller rounded corners */
+}
+.gps-age {
+  margin-top: 6px;
+  font-size: 0.9em;
+  color: #bbbbbb;
+  background: #1a1a1a;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* Canvas styling to prevent overflow */
+canvas {
+    margin-top: 12px;
+    border: 1px solid #222; /* optional: small border to distinguish canvas */
+    background-color: #0e0e0e;
+    max-width: 90vw;
+    height: auto;
+}
+</style>
+
+
+  </head>
+  <body>
+    <h2>MotoCompacto Control</h2>
+    <div class="top-button-row">
+   <button id="loadMapButton" onclick="loadMap()">Load Map From ESP</button>
+   <button id="zeroRollButton" onclick="zeroRollAngle()">Zero Roll</button>
+   <button id="zeroYawButton" onclick="zeroYaw()">Zero Yaw</button>
+ </div>
+    <div class="canvas-container">
+    <div class="plot-wrapper">
+        <p class="canvas-label">Roll Angle</p>
+        <canvas id="plot" width="400" height="300"></canvas>
+    </div>
+    <div class="map-wrapper">
+      <p class="canvas-label">Vehicle Pose</p>
+        <canvas id="mapCanvas" width="400" height="300"></canvas>
+        <div class="gps-age">
+   GPS Age: <span id="gpsAgeValue">--</span> ms
+ </div>
+    </div>
+</div>
+    <div>
+    <p> <button id="goButton" onclick="toggleGoState()">Go</button></p>
+    </div>
+      <p>File Comment:</p>
+      <input type="text" id="commentField">
+      <button id = "JSlogButton" onclick="downloadDataFile()">Log Data</button>
+    <script src="app.js"></script>
+    </body>
+    </html>
